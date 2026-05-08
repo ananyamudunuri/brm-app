@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:14-alpine
+    container_name: brm_postgres_v2
+    #restart: always
+    environment:
+      # These variables create the database and user on the first run
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=brm_db
+    ports:
+      - "5432:5432"
+    volumes:
+      # Persists your data in a volume named 'pg_brm_data'
+      - pg_brm_data:/var/lib/postgresql/data
+      # Optional: Add local .sql scripts here to run them on startup
+      # - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - brm_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pg_brm_data:
+
+# ADD THIS SECTION AT THE BOTTOM:
+networks:
+  brm_network:
+    driver: bridge

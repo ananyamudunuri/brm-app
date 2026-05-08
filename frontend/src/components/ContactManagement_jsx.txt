@@ -1,0 +1,110 @@
+// frontend/src/components/ContactManagement.jsx
+import React, { useState, useEffect } from 'react';
+import {
+  Box, Card, Typography, CircularProgress, Alert,
+  FormControl, InputLabel, Select, MenuItem, Paper,
+  Grid, Avatar, Chip
+} from '@mui/material';
+import { Business as BusinessIcon, People as PeopleIcon } from '@mui/icons-material';
+import ContactManagement from './ContactManagement';
+import api from '../api';
+
+const ContactManagementPage = () => {
+  const [customers, setCustomers] = useState([]);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchCustomers();
+  }, []);
+
+  const fetchCustomers = async () => {
+    try {
+      const response = await api.get('/crm/customers?limit=100');
+      if (response.data && response.data.data) {
+        setCustomers(response.data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching customers:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  return (
+    <Box sx={{ bgcolor: '#f5f5f5', minHeight: '100vh', p: 3 }}>
+      <Card sx={{ borderRadius: 3, overflow: 'hidden' }}>
+        {/* Header */}
+        <Box sx={{ p: 3, background: 'linear-gradient(135deg, #2196f3 0%, #1976d2 100%)', color: 'white' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <PeopleIcon sx={{ fontSize: 30 }} />
+            <Box>
+              <Typography variant="h5" fontWeight="bold">Contact Management</Typography>
+              <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                Manage contacts for your customers
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
+
+        <Box sx={{ p: 3 }}>
+          {/* Customer Selection */}
+          <Paper sx={{ p: 3, mb: 3, borderRadius: 2 }}>
+            <Typography variant="h6" gutterBottom fontWeight="bold">
+              Select Customer
+            </Typography>
+            <FormControl fullWidth sx={{ mt: 2 }}>
+              <InputLabel>Choose a customer</InputLabel>
+              <Select
+                value={selectedCustomer?.customer_id || ''}
+                label="Choose a customer"
+                onChange={(e) => {
+                  const customer = customers.find(c => c.customer_id === e.target.value);
+                  setSelectedCustomer(customer);
+                }}
+              >
+                {customers.map((customer) => (
+                  <MenuItem key={customer.customer_id} value={customer.customer_id}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <Avatar sx={{ bgcolor: '#2196f3', width: 32, height: 32 }}>
+                        <BusinessIcon sx={{ fontSize: 18 }} />
+                      </Avatar>
+                      <Box>
+                        <Typography variant="body1">{customer.customer_name}</Typography>
+                        <Typography variant="caption" color="textSecondary">
+                          {customer.email || 'No email'}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Paper>
+
+          {/* Contact Management Component */}
+          {selectedCustomer ? (
+            <ContactManagement
+              customerId={selectedCustomer.customer_id}
+              customerName={selectedCustomer.customer_name}
+            />
+          ) : (
+            <Alert severity="info" sx={{ borderRadius: 2 }}>
+              Please select a customer to view and manage their contacts.
+            </Alert>
+          )}
+        </Box>
+      </Card>
+    </Box>
+  );
+};
+
+export default ContactManagement;

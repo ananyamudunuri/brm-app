@@ -1,0 +1,40 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "proxy": "http://localhost:8000",
+  "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "start:dev": "REACT_APP_ENVIRONMENT=development react-scripts start",
+    "start:staging": "REACT_APP_ENVIRONMENT=staging react-scripts start",
+    "build": "react-scripts build",
+    "build:dev": "REACT_APP_ENVIRONMENT=development react-scripts build",
+    "build:prod": "REACT_APP_ENVIRONMENT=production react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^9.0.1",
+    "@mui/material": "^9.0.1",
+    "axios": "^1.15.2",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "react-icons": "^5.6.0",
+    "react-router-dom": "^7.14.2",
+    "react-scripts": "^5.0.1"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
